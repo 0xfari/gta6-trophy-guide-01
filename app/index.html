@@ -9,71 +9,66 @@
 <body>
 <header class="top">
   <div class="brand">
-    <div class="mark">55</div>
+    <div class="logo">L55</div>
     <div>
-      <h1>LEONIDA 55</h1>
-      <p class="sub">GTA VI trophy guide &amp; tracker &middot; PS5 &middot; 55 trophies, cited guides, roadmap to Platinum</p>
+      <h1>Leonida 55</h1>
+      <p class="sub">GTA VI trophy guide &amp; tracker — all 55 trophies, guides in our own words, every guide with its source.</p>
     </div>
   </div>
   <div class="totals" id="totals">
-    <div class="count"><strong id="earnedCount">0</strong><span>earned of 55</span></div>
-    <div class="medals"><span class="medal platinum" title="Platinum">P 1</span><span class="medal gold" title="Gold">G 2</span><span class="medal silver" title="Silver">S 6</span><span class="medal bronze" title="Bronze">B 46</span><span class="medal hidden" title="Hidden">Hidden 28</span></div>
+    <div class="big"><span id="earnedCount">0</span><span class="of">/ 55 earned</span></div>
     <div class="bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
-    <div class="pct" id="progressPct">0% to Platinum</div>
+    <div class="grades" id="gradeCounts"></div>
   </div>
 </header>
 
-<nav class="views" id="viewTabs" aria-label="Views">
-  <button data-view="checklist" class="active">Checklist</button>
-  <button data-view="roadmap">Roadmap to Platinum</button>
-  <button data-view="missable">Missables</button>
+<div class="warn" id="missableWarn">
+  <strong>1 potentially missable trophy.</strong>
+  <span><b>Positive Mental Attitude</b> — the first meditation (Jason's house, Chapter 1) disappears after Chapter 1. There is <b>no mission replay</b> and no New Game+, so meditate there before the chapter ends and keep a manual save at the start of every chapter.</span>
+</div>
+
+<nav class="controls">
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-view="checklist" role="tab">Checklist</button>
+    <button class="tab" data-view="roadmap" role="tab">Roadmap to Platinum</button>
+  </div>
+  <input id="search" type="search" placeholder="Search by trophy name…" aria-label="Search trophies">
+  <div class="filters" id="filters">
+    <button data-filter="all" class="active">All</button>
+    <button data-filter="story">Story</button>
+    <button data-filter="missable">Missable</button>
+    <button data-filter="collectibles">Collectibles</button>
+    <button data-filter="activities">Activities</button>
+    <button data-filter="online">Online</button>
+  </div>
+  <label class="spoiler"><input type="checkbox" id="spoilerToggle"> Hide story spoilers until earned</label>
+  <div class="io">
+    <button id="exportBtn" type="button">Export progress</button>
+    <label class="importBtn">Import progress<input id="importFile" type="file" accept="application/json,.json" hidden></label>
+  </div>
 </nav>
 
-<section class="toolbar">
-  <input id="search" type="search" placeholder="Search trophies by name…" aria-label="Search trophies">
-  <div class="kinds" id="kindFilters" role="group" aria-label="Filter by kind">
-    <button data-kind="all" class="active">All</button>
-    <button data-kind="story">Story</button>
-    <button data-kind="missable">Missable</button>
-    <button data-kind="collectibles">Collectibles</button>
-    <button data-kind="activities">Activities</button>
-    <button data-kind="online">Online</button>
-  </div>
-  <label class="toggle"><input type="checkbox" id="todoOnly"> To do only</label>
-  <label class="toggle"><input type="checkbox" id="spoilerToggle"> Spoiler-safe: hide story trophies until earned</label>
-</section>
-
-<main class="layout">
-  <section class="list-col">
-    <div id="listMeta" class="list-meta"></div>
-    <ul id="trophyList" class="trophy-list"></ul>
-    <div id="roadmapView" class="roadmap" hidden></div>
-    <div id="missableView" class="missable-view" hidden></div>
-    <div id="emptyState" class="empty" hidden>No trophies match this filter. Try clearing the search or picking another kind.</div>
+<main>
+  <section id="view-checklist" class="view active">
+    <div class="layout">
+      <div class="list" id="trophyList" aria-live="polite"></div>
+      <aside class="detail" id="detail" aria-label="Trophy guide detail">
+        <p class="detailEmpty">Select a trophy to read its guide, source and missable notes.</p>
+      </aside>
+    </div>
   </section>
-  <aside class="detail-col">
-    <div id="detail" class="detail">
-      <p class="detail-hint">Select a trophy on the left to read its guide and source here.</p>
+  <section id="view-roadmap" class="view">
+    <div class="roadmapIntro">
+      <h2>Road to the Platinum — about 200 hours</h2>
+      <p>One playthrough is enough. There is no mission replay and no New Game+, so the order below matters: finish the story first (and grab the one missable meditation in Chapter 1), then work the 100% checklist in free roam, then clean up strangers and the last bits. Cheats switch trophies off — keep them off for the whole run.</p>
     </div>
-    <div class="savebox">
-      <h2>Your progress</h2>
-      <p>Saved in this browser (localStorage). Export a backup file, or import one to restore it.</p>
-      <div class="save-actions">
-        <button id="exportBtn">Export progress (.json)</button>
-        <label class="import-label">Import progress<input type="file" id="importFile" accept="application/json,.json" hidden></label>
-        <button id="resetBtn" class="danger">Reset progress</button>
-      </div>
-      <p id="saveMsg" class="save-msg" role="status"></p>
-    </div>
-    <div class="sources-box">
-      <h2>Sources</h2>
-      <p>Names, descriptions and grades are the official list as published by <a href="https://www.exophase.com/game/grand-theft-auto-vi-psn/trophies/">Exophase</a> and <a href="https://psnprofiles.com/trophies/43531-grand-theft-auto-vi">PSNProfiles</a>. Every guide on this page is written in our own words from those official descriptions; where the official list does not pin down a place or a step, the guide says so. No Rockstar artwork is used.</p>
-    </div>
-  </aside>
+    <div id="roadmapStages"></div>
+  </section>
 </main>
 
-<footer class="foot">
-  <p>Leonida 55 — an unofficial fan guide. Grand Theft Auto and GTA are trademarks of Take-Two Interactive; this guide is not affiliated with Rockstar Games. Works fully offline; no network requests are made.</p>
+<footer>
+  <p>Trophy names, descriptions and grades are the official list (55 trophies: 1 Platinum, 2 Gold, 6 Silver, 46 Bronze; 28 hidden; 0 online). Guides are written in our own words — each one cites its source beside it. Progress is saved in your browser only (localStorage); export it to keep a backup. No network is used at runtime.</p>
+  <p class="src">Sources: PowerPyx trophy guide &amp; roadmap, Sixshore trophy list, GGRecon trophy list, OutputLag trophy list, GTA Zone trophy list.</p>
 </footer>
 <script src="app.js"></script>
 </body>

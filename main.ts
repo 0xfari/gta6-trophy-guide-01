@@ -1,26 +1,17 @@
-// Leonida 55 — entry hand-in for make.fun gta6-trophy-guide-01.
-//
-// Copies app/ and screenshots/ from this repository into the output directory
-// (MAKEFUN_OUTPUT_DIR, or /output) and writes /output/dossier.json with the
-// kit's own buildDossier, so the dossier the scorer recomputes matches byte
-// for byte. Deterministic: same input files, same dossier bytes.
-//
-//   MAKEFUN_OUTPUT_DIR=/tmp/out node main.ts
-import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { cpSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { buildDossier } from './vendor/makefun-frontend.ts';
 
-const repoRoot = dirname(fileURLToPath(import.meta.url));
-const outDir = process.env.MAKEFUN_OUTPUT_DIR || '/output';
+const outDir = resolve(process.env.MAKEFUN_OUTPUT_DIR || '/output');
 
-// Start from a clean output directory so a re-run cannot leave stale files.
-rmSync(outDir, { recursive: true, force: true });
+// Never remove the output directory itself: in the grader /output is a
+// mounted directory and rmSync on a mount point throws EBUSY. Empty only
+// its contents, then rebuild from scratch.
 mkdirSync(outDir, { recursive: true });
+for (const f of readdirSync(outDir)) rmSync(join(outDir, f), { recursive: true, force: true });
 
-for (const name of ['app', 'screenshots']) {
-  cpSync(join(repoRoot, name), join(outDir, name), { recursive: true });
-}
+cpSync('app', join(outDir, 'app'), { recursive: true });
+cpSync('screenshots', join(outDir, 'screenshots'), { recursive: true });
 
 const dossier = buildDossier(outDir, {
   text_max_bytes: 163840,
@@ -30,4 +21,4 @@ const dossier = buildDossier(outDir, {
   app_path_max_bytes: 1000,
 });
 writeFileSync(join(outDir, 'dossier.json'), dossier);
-console.log(`wrote ${join(outDir, 'dossier.json')} (${dossier.length} bytes)`);
+console.log(`dossier ${dossier.length} bytes`);
